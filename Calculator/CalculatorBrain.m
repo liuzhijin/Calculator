@@ -70,4 +70,8 @@
     return result;
 }
 
+- (void)clear
+{
+    [self.operandStack removeAllObjects];
+}
 @end
