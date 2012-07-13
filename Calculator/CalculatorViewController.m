@@ -31,6 +31,12 @@
 {
     NSString *digit = sender.currentTitle;
     if (self.userIsInTheMiddleOfEnteringANumber) {
+        if ([digit isEqualToString:@"."]
+            && [self.display.text rangeOfString:@"."].location != NSNotFound) {
+            NSLog(@"Already has one '.' entered, ignore it");
+            return;
+        }
+
         self.display.text = [self.display.text stringByAppendingString:digit];
     } else {
         self.display.text = digit;
