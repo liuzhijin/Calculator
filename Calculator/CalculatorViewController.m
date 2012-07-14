@@ -104,6 +104,10 @@ NSString * const ResultMark = @" =";
     if ([operation isEqualToString:@"Back"]) {
         [self backOperation];
         return;
+    } else if ([operation isEqualToString:@"+/-"] && self.userIsInTheMiddleOfEnteringANumber) {
+        double operandValue = [self.display.text doubleValue];
+        self.display.text = [NSString stringWithFormat:@"%g", -operandValue];
+        return;
     }
 
     if (self.userIsInTheMiddleOfEnteringANumber) {
