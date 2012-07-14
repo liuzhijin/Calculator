@@ -63,13 +63,32 @@
     [self.brain clear];
 }
 
+- (void)backOperation
+{
+    NSString *operand = self.display.text;
+    if ([operand length] > 0) {
+        operand = [operand substringToIndex:[operand length] - 1];
+    }
+    if ([operand length] == 0) {
+        self.userIsInTheMiddleOfEnteringANumber = NO;
+        self.display.text = @"0";
+    } else {
+        self.display.text = operand;
+    }
+}
+
 - (IBAction)operationPressed:(UIButton *)sender
 {
+    NSString *operation = sender.currentTitle;
+    if ([operation isEqualToString:@"Back"]) {
+        [self backOperation];
+        return;
+    }
+
     if (self.userIsInTheMiddleOfEnteringANumber) {
         [self enterPressed];
     }
     
-    NSString *operation = sender.currentTitle;
     if ([operation isEqualToString:@"C"]) {
         [self clearOperation];
         return;
