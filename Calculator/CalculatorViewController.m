@@ -17,6 +17,8 @@
 @end
 
 @implementation CalculatorViewController
+NSString * const ResultMark = @" =";
+
 @synthesize display = _display;
 @synthesize historyDisplay = _historyDisplay;
 @synthesize userIsInTheMiddleOfEnteringANumber = _userIsInTheMiddleOfEnteringANumber;
@@ -28,6 +30,19 @@
         _brain = [[CalculatorBrain alloc] init];
     }
     return _brain;
+}
+
+- (void)removeResultMark
+{
+    NSRange range = [self.historyDisplay.text rangeOfString:ResultMark];
+    if (range.location != NSNotFound) {
+        self.historyDisplay.text = [self.historyDisplay.text substringToIndex:range.location];
+    }    
+}
+
+- (void)addResultMark
+{
+    self.historyDisplay.text = [self.historyDisplay.text stringByAppendingFormat:@"%@", ResultMark];
 }
 
 - (IBAction)digitPressed:(UIButton *)sender
@@ -44,11 +59,14 @@
     } else {
         self.display.text = digit;
         self.userIsInTheMiddleOfEnteringANumber = YES;
+        [self removeResultMark];
     }
 }
 
 - (IBAction)enterPressed
 {
+    // when use enter to reenter operand in display
+    [self removeResultMark];
     NSString *operand = self.display.text;
     self.historyDisplay.text = [self.historyDisplay.text stringByAppendingFormat:@" %@", operand];
     [self.brain pushOperand:[operand doubleValue]];
@@ -79,6 +97,9 @@
 
 - (IBAction)operationPressed:(UIButton *)sender
 {
+    // Remove ResultMark first, then add ResultMark
+    [self removeResultMark];
+
     NSString *operation = sender.currentTitle;
     if ([operation isEqualToString:@"Back"]) {
         [self backOperation];
@@ -94,9 +115,10 @@
         return;
     }
 
-    self.historyDisplay.text = [self.historyDisplay.text stringByAppendingFormat:@" %@", operation];
     double result = [self.brain performOperation:operation];
     self.display.text = [NSString stringWithFormat:@"%g", result];
+    self.historyDisplay.text = [self.historyDisplay.text stringByAppendingFormat:@" %@", operation];
+    [self addResultMark];
 }
 
 @end
